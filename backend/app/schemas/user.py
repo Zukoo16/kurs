@@ -23,3 +23,4 @@ class CurrentUserResponse(BaseModel):
     username: str
     email: str
     roles: List[str]
+

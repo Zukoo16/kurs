@@ -43,3 +43,4 @@ async def student_materials(user: UserPrincipal = Depends(require_roles(["studen
         "message": f"Студенттік материалдар: {user.username}",
         "access": "granted",
     }
+

@@ -1,19 +1,73 @@
-# --- Python ---
-# Құпиялар мен коннектинг деректері — репозиторийге түспейді
+# ==============================================================================
+# .gitignore — Жеке мәліметтер мен құпиялардың GitHub-қа кетпеуін қамтамасыз етеді
+# ==============================================================================
+
+# 1. Құпиялар, токендер, кілттер және парольдер (ҚАТАҢ ТЫЙЫМ САЛЫНАДЫ)
 .env
-# Виртуалды орта — python -m venv .venv арқылы қайта жасалады
+.env.*
+!.env.example
+*.pem
+*.key
+*.cert
+*.crt
+*.pfx
+*.p12
+secrets/
+credentials.json
+service-account*.json
+
+# 2. Деректер қорының дамптары және жеке ақпараттар (PII & DB Dumps)
+*.sql
+*.dump
+*.tar
+*.bak
+*.sqlite
+*.sqlite3
+data/
+dumps/
+backups/
+
+# 3. Docker және жергілікті контейнер томдары (Local Volumes)
+postgres_data/
+redis_data/
+rabbitmq_data/
+ollama_data/
+keycloak_data/
+
+# 4. Python виртуалды ортасы және кэштер
 .venv/
-# Python bytecode кэш папкасы
+venv/
+ENV/
+env/
 __pycache__/
-# Компиляцияланған Python файлдары
-*.pyc
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
 
-# --- Node / Next.js ---
-# Node.js тәуелділіктері — npm install арқылы қайта орнатылады
+# 5. Node.js & Next.js 16 (web/) фронтенд файлдары
 node_modules/
-# Next.js құрастыру кэш папкасы
+web/node_modules/
 .next/
+web/.next/
+out/
+web/out/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
-# --- Логу ---
-# Қолданба журналдары — тарихта сақталмайды
+# 6. Журналдар мен логтар (Logs)
 *.log
+logs/
+
+# 7. Операциялық жүйе мен IDE файлдары
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo

@@ -14,3 +14,4 @@ async def health_check() -> Dict[str, str]:
         "service": "backend",
         "ollama_available": "yes" if ollama_ok else "no",
     }
+

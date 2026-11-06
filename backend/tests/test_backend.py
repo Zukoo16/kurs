@@ -37,3 +37,4 @@ def test_ollama_client_init():
     client = OllamaClient(base_url="http://localhost:11434", default_model="llama3.2")
     assert client.base_url == "http://localhost:11434"
     assert client.default_model == "llama3.2"
+

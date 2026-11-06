@@ -129,3 +129,4 @@ volumes:
   redis_data:
   rabbitmq_data:
   ollama_data:
+

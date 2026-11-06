@@ -17,3 +17,4 @@ class UserProfile(Base):
     role: Mapped[str] = mapped_column(String(50), default="student", nullable=False)  # student, teacher, admin
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
