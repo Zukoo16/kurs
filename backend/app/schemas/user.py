@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Optional
+
 from pydantic import BaseModel, ConfigDict, EmailStr
 
 
@@ -22,5 +22,5 @@ class CurrentUserResponse(BaseModel):
     id: str
     username: str
     email: str
-    roles: List[str]
+    roles: list[str]
 

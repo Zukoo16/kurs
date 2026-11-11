@@ -1,4 +1,5 @@
-from typing import Any, Callable, Dict, List
+from collections.abc import Callable
+from typing import Any
 
 try:
     import jwt
@@ -15,7 +16,7 @@ from app.core.config import settings
 
 
 class UserPrincipal:
-    def __init__(self, user_id: str, username: str, email: str, roles: List[str]):
+    def __init__(self, user_id: str, username: str, email: str, roles: list[str]):
         self.id = user_id
         self.username = username
         self.email = email
@@ -25,9 +26,9 @@ class UserPrincipal:
         return role in self.roles
 
 
-def extract_roles_from_token(claims: Dict[str, Any]) -> List[str]:
+def extract_roles_from_token(claims: dict[str, Any]) -> list[str]:
     """Keycloak JWT токенінен рөлдерді (realm_access немесе resource_access) шығарып алу."""
-    roles: List[str] = []
+    roles: list[str] = []
     # Realm roles
     realm_access = claims.get("realm_access", {})
     if isinstance(realm_access, dict):
@@ -78,7 +79,7 @@ if HAVE_FASTAPI:
                 headers={"WWW-Authenticate": "Bearer"},
             )
 
-    def require_roles(allowed_roles: List[str]) -> Callable:
+    def require_roles(allowed_roles: list[str]) -> Callable:
         """Рөлдерді тексеруші тәуелділік (RBAC: student, teacher, admin)."""
 
         async def role_checker(

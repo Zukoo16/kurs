@@ -1,4 +1,3 @@
-import pytest
 from app.core.config import settings
 from app.core.security import UserPrincipal, extract_roles_from_token
 from app.llm.client import OllamaClient

@@ -1,4 +1,3 @@
-from typing import Any, Dict, List, Optional
 
 from app.core.config import settings
 
@@ -6,11 +5,13 @@ from app.core.config import settings
 class OllamaClient:
     """Жергілікті Ollama LLM серверімен өзара әрекеттесу клиенті."""
 
-    def __init__(self, base_url: Optional[str] = None, default_model: Optional[str] = None):
+    def __init__(self, base_url: str | None = None, default_model: str | None = None):
         self.base_url = (base_url or settings.OLLAMA_BASE_URL).rstrip("/")
         self.default_model = default_model or settings.OLLAMA_MODEL
 
-    async def generate(self, prompt: str, model: Optional[str] = None, temperature: float = 0.7) -> str:
+    async def generate(
+        self, prompt: str, model: str | None = None, temperature: float = 0.7
+    ) -> str:
         """Мәтіндік генерация жасау (/api/generate)."""
         import httpx
 
@@ -28,7 +29,7 @@ class OllamaClient:
             data = response.json()
             return data.get("response", "")
 
-    async def chat(self, messages: List[Dict[str, str]], model: Optional[str] = None) -> str:
+    async def chat(self, messages: list[dict[str, str]], model: str | None = None) -> str:
         """Чат форматында сұраныс жолдау (/api/chat)."""
         import httpx
 

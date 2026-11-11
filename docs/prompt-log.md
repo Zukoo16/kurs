@@ -73,3 +73,34 @@
   1. [`AGENTS.md`](file:///home/demey/aidd-zukoo16/AGENTS.md) — тестілеу платформасының архитектурасы мен құпиялардың кетуіне қатаң тыйым салатын агент нұсқаулығы.
   2. [`docs/prompt-log.md`](file:///home/demey/aidd-zukoo16/docs/prompt-log.md) — парольдер, жеке мәліметтер (PII) және құпиялардың GitHub-қа кетпеуін қадағалайтын қауіпсіздік ережелері мен жұмыс журналы.
 * **Тексеру:** `.env` репозиторийге өтпейді, құпиялар `.gitignore` сүзгісімен қорғалған.
+
+---
+
+## 4-сабақ · Backend қабаттары
+> Сабаққа қатыспадым — тапсырманы оператор агенті 04-sabaq.pptx бойынша орындады.
+> Талап: `docs/layers.md` (2 әрекет × 5 қабат + Қате→HTTP + Mermaid) және `backend/app` қаңқасы
+> (core, routers, schemas, services, repositories, models). Endpoint, модель, SQL, main.py — бүгін емес.
+
+### 4-сабақ · П1 · Қабат картасын тексер + Mermaid қос (FAST)
+* **Промпт:** «@docs/layers.md — менің backend қабат картам (router → schema → service → repository → model). Жобам: мұғалімдерге арналған онлайн тестілеу платформасы (Ollama ЖИ). 1) Әр ұяшықты тексер: ереже дұрыс қабатта ма? 2) Басына Mermaid flowchart LR қос (Core — пунктирмен). 3) Басқа файлды өзгертпе.»
+* **Нәтиже:** `docs/layers.md` жасалды — 2 әрекет: (1) `POST /api/v1/llm/generate` (AI мәтін құру), (2) `GET /api/v1/auth/admin/dashboard` (тек admin). Әрқайсысына Қате→HTTP қосылды (422/401/500 және 403/401). Mermaid сызбасы басында.
+* **Қабылданбаған / неге:** LLM және auth логикасы әзірге router ішінде тұр — картада «service-ке 8–9-сабақта көшеді» деп ескерту қойылды, бүгін код жазылмады.
+* **Тексеру:** 12 ұяшық толы; сызба GitHub preview-де сурет болып ашылады.
+
+### 4-сабақ · П2 · Backend қаңқасы (PLANNING)
+* **Промпт:** «@AGENTS.md @docs/layers.md бойынша backend ҚАҢҚАСЫН жаса: backend/app ішінде core, routers, schemas, services, repositories, models (әрқайсысында бос __init__.py); core/config.py — pydantic-settings (.env-тен); .env.example; requirements-dev.txt (ruff, pytest); pyproject.toml (ruff). Endpoint, модель, SQL, main.py ЖАЗБА. Алдымен жоспар көрсет.»
+* **Нәтиже:** 3 жаңа папка (`routers/`, `services/`, `repositories/`) + барлық package-ке бос `__init__.py`; `backend/requirements-dev.txt` және `backend/pyproject.toml` (ruff) қосылды. `config.py` бұрын-ақ pydantic-settings болды.
+* **Қабылданбаған / неге:** Агент endpoint/модель/main.py жазбады — жоспарда олар жоқ (7–9-сабақ). Бұрынғы `api/v1/endpoints` жоқ етілмеді, жұмыс істей берді.
+* **Тексеру:** `ls backend/app` → core models repositories routers schemas services; `ruff check .` → All checks passed!; `python -c "from app.core.config import settings; print('config ok')"` → config ok.
+
+### 4-сабақ · П3 · Баптауларды түсіндір (AI ЧАТ)
+* **Промпт:** «@backend/app/core/config.py @.env.example файлдарын шол (.env-ті жібермеймін). Жауап бер: 1) Әр айнымалы не үшін? 2) Кодта нақты құпия бар ма? 3) .env-те айнымалы жоқ болса не болады? 4) local/test/server орталарында не өзгереді?»
+* **Нәтиже (өз сөзіммен):**
+  1. Әр айнымалы бір қызметке: `DATABASE_URL`/`POSTGRES_*` — PostgreSQL қосылымы; `KEYCLOAK_*` — OIDC аутентификациясы; `OLLAMA_*` — жергілікті ЖИ; `REDIS_URL`/`RABBITMQ_*` — кэш пен кезек; `SECRET_KEY` — токен қорғау.
+  2. Кодта нақты құпия жоқ — тек орынбасар (placeholder) мәндер; нақтысы `.env`-те.
+  3. Айнымалы жоқ болса — `Settings` оның `default` мәнін алады (сондықтан әр өрісінде safe default бар); құпиясыз өрнек бос/жалған болады.
+  4. Орталар арасында тек `.env` мәні өзгереді (local → localhost, server → контейнер атаулары); код бірдей.
+* **Тексеру:** `.env` репоға түспейді (`git check-ignore .env` → `.env`); `.env.example`-те нақты пароль жоқ.
+
+### 4-сабақ · Коммит + тег
+* **Коммит:** `4-сабақ: қабат картасы, backend қаңқасы` · **тег:** `lesson-04`

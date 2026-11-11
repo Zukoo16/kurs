@@ -1,5 +1,4 @@
 import os
-from typing import List
 
 try:
     from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -38,7 +37,7 @@ try:
         RABBITMQ_QUEUE: str = "aidd_tasks"
 
         # CORS
-        CORS_ORIGINS: List[str] = ["*"]
+        CORS_ORIGINS: list[str] = ["*"]
 
         model_config = SettingsConfigDict(
             env_file=".env",
@@ -82,7 +81,7 @@ except ImportError:
         RABBITMQ_PASSWORD: str = os.getenv("RABBITMQ_PASSWORD", "guest")
         RABBITMQ_QUEUE: str = os.getenv("RABBITMQ_QUEUE", "aidd_tasks")
 
-        CORS_ORIGINS: List[str] = field(default_factory=lambda: ["*"])
+        CORS_ORIGINS: list[str] = field(default_factory=lambda: ["*"])
 
 
 settings = Settings()

@@ -28,7 +28,9 @@ async def admin_dashboard(user: UserPrincipal = Depends(require_roles(["admin"])
 
 
 @router.get("/teacher/courses")
-async def teacher_courses(user: UserPrincipal = Depends(require_roles(["teacher", "admin"]))) -> dict:
+async def teacher_courses(
+    user: UserPrincipal = Depends(require_roles(["teacher", "admin"])),
+) -> dict:
     """Оқытушылар мен әкімшілерге арналған аймақ."""
     return {
         "message": f"Оқытушы интерфейсі: {user.username}",
@@ -37,7 +39,9 @@ async def teacher_courses(user: UserPrincipal = Depends(require_roles(["teacher"
 
 
 @router.get("/student/materials")
-async def student_materials(user: UserPrincipal = Depends(require_roles(["student", "teacher", "admin"]))) -> dict:
+async def student_materials(
+    user: UserPrincipal = Depends(require_roles(["student", "teacher", "admin"])),
+) -> dict:
     """Студенттерге, оқытушыларға және әкімшілерге қолжетімді аймақ."""
     return {
         "message": f"Студенттік материалдар: {user.username}",

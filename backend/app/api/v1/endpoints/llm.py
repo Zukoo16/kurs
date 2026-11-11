@@ -1,4 +1,3 @@
-from typing import Dict, List, Optional
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 
@@ -10,7 +9,7 @@ router = APIRouter()
 
 class GenerateRequest(BaseModel):
     prompt: str
-    model: Optional[str] = None
+    model: str | None = None
     temperature: float = 0.7
 
 
@@ -26,8 +25,8 @@ class ChatMessage(BaseModel):
 
 
 class ChatRequest(BaseModel):
-    messages: List[ChatMessage]
-    model: Optional[str] = None
+    messages: list[ChatMessage]
+    model: str | None = None
 
 
 class ChatResponse(BaseModel):

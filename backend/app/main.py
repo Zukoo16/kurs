@@ -9,7 +9,10 @@ def create_application() -> FastAPI:
     application = FastAPI(
         title=settings.PROJECT_NAME,
         version="1.0.0",
-        description="FastAPI + PostgreSQL + SQLAlchemy 2 + Alembic + Keycloak OIDC + Ollama + Redis + RabbitMQ",
+        description=(
+            "FastAPI + PostgreSQL + SQLAlchemy 2 + Alembic + "
+            "Keycloak OIDC + Ollama + Redis + RabbitMQ"
+        ),
         docs_url="/docs",
         redoc_url="/redoc",
         openapi_url="/openapi.json",
