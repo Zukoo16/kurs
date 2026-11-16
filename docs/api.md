@@ -35,3 +35,13 @@ AI қолжетпесе → fallback (дұрыс жауап кілті + еск�
 | 403 | Кірдіңіз, рұқсат жоқ  | student тест құрады; student басқаның review-ін алады  |
 | 404 | Табылмады             | мұндай тест/attempt жоқ (немесе ол сіздің емес)         |
 | 422 | Дерек пішімі қате     | нұсқа саны 4 емес; correct_index 0–3 арасында емес; topic бос |
+
+## Сәйкестік: story → endpoint → кесте
+
+| Story | Endpoint | Кесте |
+|---|---|---|
+| US-1 (M) тест тапсыру, ұпай | GET /api/quizzes · GET /api/quizzes/{id} · POST /api/quizzes/{id}/attempts | quizzes, questions, attempts, attempt_answers |
+| US-2 (M) AI қате шолуы | POST /api/attempts/{id}/review | attempts, attempt_answers |
+| US-3 (M) әлсіз тақырыптар картасы | GET /api/topics/me | attempts, attempt_answers, questions |
+| US-4 (M) ментор: тест + топ + жалпы қателер | POST /api/quizzes · POST /api/quizzes/{id}/questions · POST /api/quizzes/{id}/publish · POST /api/mentor/students · GET /api/mentor/students · GET /api/mentor/stats | quizzes, questions, mentor_students |
+| US-5 (S) менің attempt-терім | GET /api/attempts/me | attempts |
