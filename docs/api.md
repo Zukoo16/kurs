@@ -32,3 +32,13 @@
 | 403 | Кірдіңіз, рұқсат жоқ  | student /api/quizzes-ке POST; басқаның attempt-ін оқу |
 | 404 | Табылмады             | мұндай тест/сұрақ жоқ                       |
 | 422 | Дерек пішімі қате     | атауы 2 таңба; нұсқаның саны 1 немесе 7; correct_index шетінен тыс |
+
+## Сәйкестік: story → endpoint → кесте
+
+| Story | Endpoint | Кесте |
+|---|---|---|
+| US-1 (M) тест құру, сұрақ қосу | POST /api/quizzes · POST /api/quizzes/{id}/questions · GET /api/quizzes/me · GET /api/quizzes/{id} · PATCH /api/quizzes/{id} · DELETE /api/quizzes/{id} | quizzes, questions |
+| US-2 (M) жариялау | POST /api/quizzes/{id}/publish | quizzes |
+| US-3 (M) тапсыру, ұпай | GET /api/quizzes · GET /api/quizzes/{id} · POST /api/quizzes/{id}/attempts | quizzes, questions, attempts |
+| US-4 (M) AI ұсынысы | POST /api/ai/generate-questions | — (сақтау US-1 арқылы: questions) |
+| US-5 (S) өз нәтижелерім | GET /api/attempts/me | attempts |
