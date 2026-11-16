@@ -26,7 +26,7 @@ AI-Driven Development курсының негізгі жобасы.
 
 * **Backend:** [FastAPI](https://fastapi.tiangolo.com/) (Python 3.12+)
 * **Деректер қоры & ORM:** PostgreSQL 16 + [SQLAlchemy 2.0](https://www.sqlalchemy.org/) + Alembic
-* **Аутентификация & Авторизация:** [Keycloak](https://www.keycloak.org/) (OIDC, рөлдер: `student`, `teacher`, `admin`)
+* **Аутентификация & Авторизация:** [Keycloak](https://www.keycloak.org/) (OIDC, рөлдер: `student`, `mentor`, `admin`)
 * **Жергілікті LLM:** [Ollama](https://ollama.com/) (`llama3.2` моделі)
 * **Кэштеу:** Redis 7
 * **Асинхронды кезек & Worker:** RabbitMQ 3 + фондық өңдеуші (Worker)
@@ -45,7 +45,7 @@ AI-Driven Development курсының негізгі жобасы.
 │   │   ├── api/v1/                # REST API эндпоинттары (health, auth, llm)
 │   │   ├── core/                  # Конфигурация мен Keycloak OIDC күзеті
 │   │   ├── db/                    # SQLAlchemy 2 сессиясы мен базалық класс
-│   │   ├── models/                # Деректер моделі (UserProfile)
+│   │   ├── models/                # Деректер моделі (TestUp AI кестелері — 7-сабақтан)
 │   │   ├── schemas/               # Pydantic схемалары
 │   │   └── llm/                   # Ollama интеграциялық клиенті
 │   ├── tests/                     # Бэкенд pytest тесттері

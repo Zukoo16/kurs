@@ -1,7 +1,10 @@
 # Қабат картасы (4-сабақ)
 
-Жоба: **AIDD Platform** — FastAPI backend, Keycloak OIDC (RBAC: student · teacher · admin),
+Жоба: **TestUp AI** (бұрын: AIDD Platform) — FastAPI backend, Keycloak OIDC (RBAC: student · mentor · admin),
 Ollama арқылы жергілікті LLM, PostgreSQL + SQLAlchemy 2.
+
+> **Ескерту:** бұл картадағы мысалдар (LLM generate, admin dashboard, `user_profiles`) — 4-сабақ кезеңінің.
+> Қазіргі деректер моделі мен endpoint-тер: `docs/er-diagram.md` және `docs/api.md` (TestUp AI).
 
 Бұл карта — бір сұраныстың 5 қабат арқылы жүретін жолы. Ереже: **қате неғұрлым ерте
 ұсталса, соғұрлым жақсы**. Әр қабат өз ісін ғана біледі.

@@ -15,7 +15,7 @@ class UserProfile(Base):
     keycloak_id: Mapped[str] = mapped_column(String(64), unique=True, index=True, nullable=False)
     email: Mapped[str] = mapped_column(String(255), unique=True, index=True, nullable=False)
     username: Mapped[str] = mapped_column(String(100), nullable=False)
-    # role: student, teacher, admin
+    # role: student, mentor, admin
     role: Mapped[str] = mapped_column(String(50), default="student", nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
