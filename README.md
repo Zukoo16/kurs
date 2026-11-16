@@ -1,28 +1,86 @@
-# aidd-zukoo16
+# AIDD Platform
 
-AI-Driven Development курсы — жеке жоба репозиторийі (1-апта).
+AI-Driven Development курсының негізгі жобасы.
 
-## Мақсаты
+Платформа заманауи микросервистік архитектураға, жергілікті ЖИ (LLM — Ollama) мүмкіндіктеріне және Keycloak OIDC рөлдік қауіпсіздік моделіне негізделген.
 
-Бірінші Python-прожектің даму ортасы (venv, Git, GitHub) мен «тармақ → коммит → PR → merge» жұмыс тәртібін меңгеру.
+---
 
-## Не істейді
+## 🛠 Технологиялық стек
 
-`hello.py` — сәлемдесу скрипті: атыңызды сұрап (немесе `--name` аргументімен ала) «Сәлем, <аты>! Бүгін <күн.ай.жыл>» деп шығарады. Тек стандартты кітапхана.
+* **Backend:** [FastAPI](https://fastapi.tiangolo.com/) (Python 3.12+)
+* **Деректер қоры & ORM:** PostgreSQL 16 + [SQLAlchemy 2.0](https://www.sqlalchemy.org/) + Alembic
+* **Аутентификация & Авторизация:** [Keycloak](https://www.keycloak.org/) (OIDC, рөлдер: `student`, `teacher`, `admin`)
+* **Жергілікті LLM:** [Ollama](https://ollama.com/) (`llama3.2` моделі)
+* **Кэштеу:** Redis 7
+* **Асинхронды кезек & Worker:** RabbitMQ 3 + фондық өңдеуші (Worker)
+* **Frontend:** Next.js 16 (`web/`)
+* **Кері прокси (Reverse Proxy):** Nginx
+* **Оркестрация:** Docker Compose
+* **Тестілеу:** pytest (9.x)
 
-## Іске қосу
+---
 
-```bash
-python -m venv .venv
-source .venv/bin/activate        # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
+## 📂 Жоба құрылымы
 
-python hello.py                  # атты қолмен енгізу
-python hello.py --name Әли       # ат аргументпен
+```text
+├── backend/                       # FastAPI қосымшасы
+│   ├── app/
+│   │   ├── api/v1/                # REST API эндпоинттары (health, auth, llm)
+│   │   ├── core/                  # Конфигурация мен Keycloak OIDC күзеті
+│   │   ├── db/                    # SQLAlchemy 2 сессиясы мен базалық класс
+│   │   ├── models/                # Деректер моделі (UserProfile)
+│   │   ├── schemas/               # Pydantic схемалары
+│   │   └── llm/                   # Ollama интеграциялық клиенті
+│   ├── tests/                     # Бэкенд pytest тесттері
+│   ├── Dockerfile
+│   └── requirements.txt
+├── web/                           # Next.js 16 қолданбасы
+│   ├── src/app/                   # App Router беттері
+│   ├── package.json
+│   └── Dockerfile
+├── worker/                        # RabbitMQ асинхронды өңдеушісі
+│   ├── main.py
+│   ├── requirements.txt
+│   └── Dockerfile
+├── nginx/                         # Nginx конфигурациясы
+│   └── nginx.conf
+├── tests/                         # Негізгі модульдік тесттер
+├── docker-compose.yml             # Барлық сервистердің конфигурациясы
+├── .env.example                   # Баптаулар шаблоны
+└── AGENTS.md                      # Жобаның AI агент ережелері
 ```
 
-## Тест
+---
+
+## 🚀 Іске қосу (Docker Compose)
+
+1. **Конфигурациялық `.env` файлын дайындау:**
+   ```bash
+   cp .env.example .env
+   ```
+
+2. **Барлық сервистерді контейнерде көтеру:**
+   ```bash
+   docker compose up -d --build
+   ```
+
+3. **Қолжетімді сервистер:**
+   * **Nginx Entrypoint:** [http://localhost](http://localhost)
+   * **FastAPI Docs (Swagger UI):** [http://localhost:8000/docs](http://localhost:8000/docs)
+   * **Keycloak Console:** [http://localhost:8080](http://localhost:8080)
+   * **RabbitMQ Management:** [http://localhost:15672](http://localhost:15672) (guest/guest)
+   * **Ollama API:** [http://localhost:11434](http://localhost:11434)
+   * **Next.js Web:** [http://localhost:3000](http://localhost:3000)
+
+---
+
+## 🧪 Тесттерді іске қосу
 
 ```bash
-.venv/bin/pytest --version       # pytest ортада орнатылған (9.x)
+# Виртуалды ортаны іске қосу
+source .venv/bin/activate
+
+# Тесттерді орындау
+pytest -v
 ```
