@@ -1,44 +1,37 @@
 # API жоспары (6-сабақ)
 
 Жол ережесі: `/api/` + кесте атауы көпше + керек болса `{id}`; жолда етістік жоқ,
-тек ерекше әрекеттер (`/publish`, `/attempts`, `/generate-questions`).
+тек ерекше әрекеттер (`/publish`, `/review`, `/attempts`, `/stats`).
 
-| Әдіс   | Жол                            | Кім                      | Не істейді                          | Story  | Кесте                 |
-|--------|--------------------------------|--------------------------|-------------------------------------|--------|-----------------------|
-| POST   | /api/quizzes                   | teacher                  | тест құру (жоспарлау)               | US-1   | quizzes               |
-| GET    | /api/quizzes/me                | teacher (иесі)           | өз тесттерінің тізімі               | US-1   | quizzes               |
-| GET    | /api/quizzes/{id}              | teacher (иесі); student — жарияланғанда | тест мәліметі + сұрақтар (нұсқалармен, дұрыс индекссіз) | US-1, US-3 | quizzes, questions |
-| PATCH  | /api/quizzes/{id}              | teacher (иесі)           | жоспардағы тестті түзету            | US-1   | quizzes               |
-| DELETE | /api/quizzes/{id}              | teacher (иесі)           | тестті өшіру (тапсырылуы болмаса)   | US-1   | quizzes               |
-| POST   | /api/quizzes/{id}/questions    | teacher (иесі)           | сұрақ қосу (2–6 нұсқа, 1 дұрыс)     | US-1   | questions             |
-| POST   | /api/quizzes/{id}/publish      | teacher (иесі)           | тестті жариялау (сұрағы 0 → 400)   | US-2   | quizzes               |
-| GET    | /api/quizzes                   | student (жарияланғандар) | жарияланған тесттер тізімі          | US-3   | quizzes               |
-| POST   | /api/quizzes/{id}/attempts     | student                  | жауаптарды жіберу; жауапта `score`  | US-3   | attempts              |
-| GET    | /api/attempts/me               | student                  | менің бұрынғы нәтижелерім            | US-5   | attempts              |
-| POST   | /api/ai/generate-questions     | teacher                  | мәтіннен сұрақ ұсынысы (JSON)       | US-4   | — (сақтау US-1 арқылы)|
+| Әдіс   | Жол                            | Кім                      | Не істейді                                        | Story | Кесте                          |
+|--------|--------------------------------|--------------------------|---------------------------------------------------|-------|--------------------------------|
+| POST   | /api/quizzes                   | mentor                   | практикалық тест құру (жоспар)                    | US-4  | quizzes                        |
+| POST   | /api/quizzes/{id}/questions    | mentor (иесі)            | сұрақ қосу (4 нұсқа, 1 дұрыс, тақырып)            | US-4  | questions                      |
+| POST   | /api/quizzes/{id}/publish      | mentor (иесі)            | тестті жариялау (сұрағы 0 → 400)                  | US-4  | quizzes                        |
+| GET    | /api/quizzes                   | student                  | жарияланған тесттер тізімі                        | US-1  | quizzes                        |
+| GET    | /api/quizzes/{id}              | student (жарияланғанда)  | тест мәліметі + сұрақтар (correct_index-сіз)      | US-1  | quizzes, questions             |
+| POST   | /api/quizzes/{id}/attempts     | student                  | жауаптарды жіберу; жауапта `score`                | US-1  | attempts, attempt_answers      |
+| POST   | /api/attempts/{id}/review      | student (иесі)           | AI шолу: әр қатенің дұрыс шешімі бойынша түсіндірме | US-2  | attempts, attempt_answers      |
+| GET    | /api/attempts/me               | student                  | менің бұрынғы attempt-терім                        | US-5  | attempts                       |
+| GET    | /api/topics/me                 | student                  | әлсіз тақырыптар картасы (menің attempt-терімнен) | US-3  | attempts, attempt_answers, questions |
+| POST   | /api/mentor/students           | mentor                   | өз тобыма студент қосу                            | US-4  | mentor_students                |
+| GET    | /api/mentor/students           | mentor                   | менің топымдағы студенттер                        | US-4  | mentor_students                |
+| GET    | /api/mentor/stats              | mentor                   | топтың жиі қателескен тақырыптары (top-N)         | US-4  | attempts, attempt_answers, questions |
+| POST   | /api/attempts/{id}/feedback    | mentor                   | оқушы attempt-іне кері байланыс                    | US-6  | attempts                       |
 
-Ереже: AI ұсынысын тікелей DB-ге жазатын endpoint жоқ — мұғалім `POST …/questions`
-арқылы өзі қосады (US-4 шарты).
+Ережелер: студентке арналған схемада `correct_index` БОЛМАЙДЫ (AGENTS.md).
+AI шолу (US-2) жаңа кесте құрмайды — әр сұраныста Ollama арқылы generatеді;
+AI қолжетпесе → fallback (дұрыс жауап кілті + ескерту).
 
 ## Жауап кодтары
 
-| Код | Қарапайым тілмен      | Бұл жобадағы мысал                          |
-|-----|-----------------------|---------------------------------------------|
-| 200 | Бәрі дұрыс            | тесттер тізімі қайтты                       |
-| 201 | Құрылды               | жаңа тест/сұрақ/attempt құрылды             |
-| 204 | Өшірілді, қайтарыс жоқ | тест өшірілді                               |
-| 400 | Ереже бұзылды         | сұрағы 0 тестті жариялау; тапсырылмаған тестке attempt |
-| 401 | Сіз кірмегенсіз       | токен жоқ                                   |
-| 403 | Кірдіңіз, рұқсат жоқ  | student /api/quizzes-ке POST; басқаның attempt-ін оқу |
-| 404 | Табылмады             | мұндай тест/сұрақ жоқ                       |
-| 422 | Дерек пішімі қате     | атауы 2 таңба; нұсқаның саны 1 немесе 7; correct_index шетінен тыс |
-
-## Сәйкестік: story → endpoint → кесте
-
-| Story | Endpoint | Кесте |
-|---|---|---|
-| US-1 (M) тест құру, сұрақ қосу | POST /api/quizzes · POST /api/quizzes/{id}/questions · GET /api/quizzes/me · GET /api/quizzes/{id} · PATCH /api/quizzes/{id} · DELETE /api/quizzes/{id} | quizzes, questions |
-| US-2 (M) жариялау | POST /api/quizzes/{id}/publish | quizzes |
-| US-3 (M) тапсыру, ұпай | GET /api/quizzes · GET /api/quizzes/{id} · POST /api/quizzes/{id}/attempts | quizzes, questions, attempts |
-| US-4 (M) AI ұсынысы | POST /api/ai/generate-questions | — (сақтау US-1 арқылы: questions) |
-| US-5 (S) өз нәтижелерім | GET /api/attempts/me | attempts |
+| Код | Қарапайым тілмен      | Бұл жобадағы мысал                                    |
+|-----|-----------------------|--------------------------------------------------------|
+| 200 | Бәрі дұрыс            | тесттер/attempt-тер тізімі қайтты                      |
+| 201 | Құрылды               | тест/сұрақ/attempt құрылды                             |
+| 204 | Өшірілді, қайтарыс жоқ | (MVP-де DELETE жоқ — резерв)                            |
+| 400 | Ереже бұзылды         | сұрағы 0 тестті жариялау; жарияланбаған тестке тапсыру  |
+| 401 | Сіз кірмегенсіз       | токен жоқ                                              |
+| 403 | Кірдіңіз, рұқсат жоқ  | student тест құрады; student басқаның review-ін алады  |
+| 404 | Табылмады             | мұндай тест/attempt жоқ (немесе ол сіздің емес)         |
+| 422 | Дерек пішімі қате     | нұсқа саны 4 емес; correct_index 0–3 арасында емес; topic бос |
