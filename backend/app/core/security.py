@@ -80,7 +80,7 @@ if HAVE_FASTAPI:
             )
 
     def require_roles(allowed_roles: list[str]) -> Callable:
-        """Рөлдерді тексеруші тәуелділік (RBAC: student, teacher, admin)."""
+        """Рөлдерді тексеруші тәуелділік (RBAC: student, mentor, admin)."""
 
         async def role_checker(
             current_user: UserPrincipal = Depends(get_current_user),

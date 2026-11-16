@@ -13,12 +13,12 @@ def test_extract_roles_from_token():
     mock_claims = {
         "realm_access": {"roles": ["student", "default-roles-aidd"]},
         "resource_access": {
-            settings.KEYCLOAK_CLIENT_ID: {"roles": ["teacher"]}
+            settings.KEYCLOAK_CLIENT_ID: {"roles": ["mentor"]}
         },
     }
     roles = extract_roles_from_token(mock_claims)
     assert "student" in roles
-    assert "teacher" in roles
+    assert "mentor" in roles
 
 
 def test_user_principal_has_role():
