@@ -60,7 +60,7 @@ services:
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN_USER:-admin}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin_secure_password}
       KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-app_db}
+      KC_DB_URL: jdbc:postgresql://postgres:5432/${KEYCLOAK_DB:-keycloak_db}
       KC_DB_USERNAME: ${POSTGRES_USER:-app_user}
       KC_DB_PASSWORD: ${POSTGRES_PASSWORD:-app_secure_password}
       KC_HEALTH_ENABLED: "true"
