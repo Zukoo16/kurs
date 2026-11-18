@@ -125,3 +125,33 @@
 <!-- Шешім белгілері: ✅ қабылданды · ✏️ өзгертілді · ❌ қабылданбады -->
 
 **Коммит + тег:** `5-сабақ: тақырып / мәселе тұжырымы / user stories / сұхбат нұсқаулығы` → PR #4 → тег `lesson-05`; `6-сабақ: ER диаграммасы / API жоспары / архитектура / сәйкестік кестесі` → PR #5 → тег `lesson-06`.
+
+---
+
+## 7-сабақ · FastAPI: бірінші endpoint
+> 07-sabaq.pptx бойынша. Талап: `schemas/health.py` (HealthRead), `routers/health.py` (GET /api/health),
+> `main.py` (app + Swagger /api/docs), `tests/test_health.py`; дерекқор, модель, басқа endpoint әлі жоқ.
+
+### 7-сабақ · П1 · FastAPI-дің бірінші нұсқасы (PLANNING)
+* **Промпт:** «@AGENTS.md @docs/layers.md @docs/api.md бойынша FastAPI-дің алғашқы іске қосылатын нұсқасын жаса. Тек мыналар: schemas/health.py (HealthRead: status, environment), routers/health.py (APIRouter(prefix="/api"), GET /health → HealthRead, environment — settings-тен), main.py (FastAPI, docs_url="/api/docs", openapi_url="/api/openapi.json", health router-ін тіркеу), requirements-ке fastapi + uvicorn[standard]. Дерекқор, модель, басқа endpoint, middleware ЖАЗБА. Алдымен жоспар көрсет.»
+* **Нәтиже:** 3 файл: `app/schemas/health.py` (жаңа), `app/routers/health.py` (жаңа), `app/main.py` (жаңартылды). requirements.txt-те fastapi/uvicorn бұрын-ақ бар еді — өзгеріс жоқ. Бұрынғы `create_application` (CORS, `/` endpoint, `api/v1` router) алынды — слайд бойынша main.py тек router-лерді тіркейді; `app/api/v1` папкасы өшірілмеді (8–10-сабақта `routers/` арқылы қайта тіркеледі).
+* **Қабылданбаған / неге:** Слайдтағы `settings.app_name` / `settings.environment` осы репозиторийдің 4-сабақ конфигурациясында `PROJECT_NAME` / `ENVIRONMENT` деп аталады — 4-сабақ ережесі бойынша config.py өзгертілмей, бар атаулар қолданылды.
+* **Тексеру:** `ruff check .` → All checks passed; `pytest -q` → 5 passed (4 ескі + 1 жаңа); `uvicorn app.main:app --port 8001` → `GET /api/health` → `{"status":"ok","environment":"development"}`, `GET /api/docs` → 200 (Swagger), openapi.json-да `HealthRead` schema. 8000-портта Docker backend контейнері (есі image) тұрғандықтан тексеру 8001-де орындалды — слайд 14: «--port 8001».
+
+### 7-сабақ · П2 · Кодымды маған түсіндір (FAST)
+* **Промпт:** «@backend/app/main.py @backend/app/routers/health.py @backend/tests/test_health.py — мен жаңадан бастаушымын. Әр файлды жол-жолымен қарапайым тілмен түсіндір: 1) әр жол не істейді? 2) `uvicorn app.main:app` осы файлдарды қалай табады? 3) тест серверсіз қалай жұмыс істейді? 4) нені өзгертсем, не бұзылады (3 мысал)? Кодты өзгертпе — тек түсіндір.»
+* **Нәтиже (агенттің түсіндірмесі, қысқаша):**
+  1. `main.py` — «есік + тізім»: `app = FastAPI(...)` бүкіл қосымшаны жасайды (атауы — config-тен, Swagger мекенжайы — /api/docs); `app.include_router(health.router)` health router-ін қосымшаға тіркейді. Мұнда endpoint жазылмайды.
+  2. `routers/health.py` — «даяшы»: `APIRouter(prefix="/api")` — бұл файлдағы барлық жол /api-дан басталады; `@router.get("/health", response_model=HealthRead)` — GET әдісі + жол = /api/health endpoint-і; `def health()` сұраныс келгенде ғана орындалып, `HealthRead(status="ok", environment=settings.ENVIRONMENT)` қайтарады.
+  3. `schemas/health.py` — «бланк»: `BaseModel` Pydantic-ті қосады — әр өрістің түрін тексереді. `HealthRead(status="ok")` (environment-сіз) → ValidationError; API-да бұл 422-ге айналады.
+  4. `uvicorn app.main:app` — «app/main.py файлындағы app айнымалысы»: uvicorn модульді import-тап, сол айнымалыны алып, 8000-портта сұраныстарды тыңдайды.
+  5. `TestClient(app)` — «жасанды браузер»: серверді іске қоспай, тікелей app-ке сұраныс жібереді; сондықтан тест жылдам және әр коммитте `pytest -q`-пен автоматты қайталанады.
+  6. Нені өзгертсем, не бұзылады (3 мысал): (a) `include_router` жолын өшірсем → /api/health 404; (b) схемадан `environment` өрісін алып тастасам → router-дағы `HealthRead(...)` қатады, жауапта осы өріс болмайды; (c) `prefix="/api"` өшірсе → жол жай ғана /health болады, /api/health 404.
+* **Менің 3 ойым (өз сөзіммен):** *(exit ticket алдында студент өз сөзімен толтырады)*
+  1. …
+  2. …
+  3. …
+* **Тексеру:** Код өзгертілмеді — түсіндірме ғана берілді; 3 ойды студент өзі жазады (курстық ереже — AI-сыз).
+
+### 7-сабақ · Коммит + тег
+* **Коммиттер:** `7-сабақ: main.py және /api/health endpoint` · `7-сабақ: бірінші тест test_health.py` · `docs: prompt log — 7-сабақ` · **тег:** `lesson-07`
