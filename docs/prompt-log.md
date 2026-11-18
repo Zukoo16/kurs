@@ -155,3 +155,23 @@
 
 ### 7-сабақ · Коммит + тег
 * **Коммиттер:** `7-сабақ: main.py және /api/health endpoint` · `7-сабақ: бірінші тест test_health.py` · `docs: prompt log — 7-сабақ` · **тег:** `lesson-07`
+
+---
+
+## 8-сабақ · PostgreSQL-ді backend-ке қосу
+> 08-sabaq.pptx берілмеді — 7-сабақ соңындағы «8-сабақта осы backend-ке PostgreSQL қосамыз» + docs (er-diagram.md, architecture.md) бойынша орындалды. Слайдтар келсе — айырмашылықтарды олар бойынша түзетеміз.
+
+### 8-сабақ · П1 · DB қосылысы + алғашқы миграция (PLANNING)
+* **Промпт:** «PostgreSQL-ді backend-ке қос: docker compose-тағы postgres-қа қосылымды тексер, user_profiles кестесі үшін Alembic миграциясын жаса (autogenerate), upgrade head іске қос. Алдымен жоспар көрсет.»
+* **Нәтиже:**
+  1. Қосылым тексерілді: postgres контейнері (16-alpine) healthy; `app_db` дерекқорында `app_user` рөлі.
+  2. `backend/alembic/versions/ddbc62e61379_create_user_profiles_table.py` — алғашқы миграция: `user_profiles` кестесі (7 баған: id, keycloak_id, email, username, role, is_active, created_at + 3 индекс) + `alembic upgrade head` орындалды.
+  3. `requirements.txt`: `sqlalchemy[asyncio]` (greenlet) + `psycopg[binary]` қосылды — .env-тегі URL `postgresql+psycopg` диалектісін қолданады, venv-те олар болмады.
+  4. `pyproject.toml`: `alembic/versions/*` үшін per-file-ignores (автогенерацияланған boilerplate рuff-қа түспейді).
+* **Табылған қателер мен түзетулер:**
+  1. `.env`-тегі `DATABASE_URL` жолында қате user (ескі `user`, DB-де `app_user`). Курс ережесі бойынша агент `.env`-ті өзгертпейді — миграция дұрыс URL-мен (env-айнымалы арқылы) іске қосылды; **студент `.env`-тегі жолды өзі түзетеді**: `DATABASE_URL=postgresql+psycopg://app_user:app_secure_password@127.0.0.1:5432/app_db`.
+  2. **ҚАТПЕ:** Keycloak сол бір `app_db`-ді қолданып отыр екен — alembic autogenerate оның ~90 кестесін DROP еткісі келді. Миграция FK қатесімен құлап, транзакция rollback болды (Keycloak деректері аман). Түзету: Keycloak-ты жеке `keycloak_db`-ға көшірдік (compose-та `KEYCLOAK_DB` айнымалысы, `.env.example`-ке қосылды); `app_db`-дегі Keycloak қалдық кестелері тазартылды (толық доступ рұқсатымен). Енді `app_db`-те тек: `alembic_version` + `user_profiles`.
+* **Тексеру:** `docker compose up -d keycloak` → /health/ready 200, keycloak_db-де 92 кесте + master realm; app_db: `user_profiles` кестесі бар (бағандары модельмен сәйкес); `ruff check .` → All checks passed; `pytest -q` → 5 passed.
+
+### 8-сабақ · Коммит + тег
+* **Коммиттер:** `8-сабақ: PostgreSQL қосылысы + алғашқы миграция (user_profiles)` · `fix: Keycloak-ты жеке keycloak_db-ға көшіру` · `docs: prompt log — 8-сабақ` · **тег:** `lesson-08`
